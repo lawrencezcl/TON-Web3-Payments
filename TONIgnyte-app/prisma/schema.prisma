@@ -20,7 +20,7 @@ model User {
 }
 
 model Expense {
-  id          String    @id @default(uuid())
+  id          String    @id @default(dbgenerated("gen_random_uuid()"))
   description String
   amount      Float
   paidBy      User      @relation("ExpensePaidBy", fields: [paidById], references: [id])
@@ -39,7 +39,7 @@ model ExpenseParticipant {
 }
 
 model Merchant {
-  id          String   @id @default(uuid())
+  id          String   @id @default(dbgenerated("gen_random_uuid()"))
   name        String
   description String?
   tonAddress  String   @unique
@@ -49,7 +49,7 @@ model Merchant {
 }
 
 model Transaction {
-  id             String   @id @default(uuid())
+  id             String   @id @default(dbgenerated("gen_random_uuid()"))
   fromAddress    String
   toAddress      String
   amount         Float
@@ -61,7 +61,7 @@ model Transaction {
 }
 
 model LoyaltyToken {
-  id            String      @id @default(uuid())
+  id            String      @id @default(dbgenerated("gen_random_uuid()"))
   user          User        @relation(fields: [userId], references: [id])
   userId        Int
   merchant      Merchant?   @relation(fields: [merchantId], references: [id])

@@ -7,6 +7,33 @@ const prismaClientSingleton = () => {
   const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_PRISMA_URL;
   if (!databaseUrl) {
     console.warn('Warning: Database URL not configured. Database operations will fail.');
+    // Return a mock client that will fail gracefully
+    return {
+      $connect: async () => { throw new Error('Database not configured'); },
+      $disconnect: async () => {},
+      $queryRaw: async () => { throw new Error('Database not configured'); },
+      $transaction: async (fn: any) => { throw new Error('Database not configured'); },
+      user: {
+        findUnique: async () => null,
+        create: async () => { throw new Error('Database not configured'); },
+      },
+      expense: {
+        findMany: async () => [],
+        create: async () => { throw new Error('Database not configured'); },
+      },
+      merchant: {
+        findUnique: async () => null,
+        create: async () => { throw new Error('Database not configured'); },
+      },
+      transaction: {
+        findMany: async () => [],
+        create: async () => { throw new Error('Database not configured'); },
+      },
+      loyaltyToken: {
+        findMany: async () => [],
+        create: async () => { throw new Error('Database not configured'); },
+      },
+    } as any;
   }
   
   // Configure Prisma client with appropriate settings for production
