@@ -46,7 +46,7 @@ jobs:
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-org-id: lawrencezcls-projects
+          vercel-project-id: prj_D8WTAZDxRSU6OeVD2ovh6CcbXZvg
           working-directory: TONIgnyte-app
           vercel-args: ${{ github.ref == 'refs/heads/main' && '--prod' || '' }}
