@@ -1,0 +1,7 @@
+{
+  "name": "TON Loyalty Token",
+  "symbol": "TONLT",
+  "decimals": 9,
+  "description": "Loyalty token for TON Web3 Payments solution",
+  "image": "https://ton-web3-payments.vercel.app/icon.png"
+}

@@ -1,0 +1,59 @@
+;; Simple Loyalty Token Smart Contract for TON Blockchain
+
+() recv_internal(int msg_value, cell in_msg, slice in_msg_body) {
+    ;; Get the current smart contract data
+    slice ds = get_data().begin_parse();
+    int total_supply = ds~load_coins();
+    
+    ;; Parse the incoming message to check function ID
+    slice msg_body = in_msg_body;
+    int function_id = msg_body~load_uint(32);
+    
+    ;; Handle mint function (0x4d696e74 = "Mint")
+    if (function_id == 0x4d696e74) {
+        ;; Format: 0x4d696e74 + receiver_address + amount
+        slice receiver_addr = msg_body~load_msg_addr();
+        int amount = msg_body~load_coins();
+        
+        ;; In a real implementation, you'd validate the sender is authorized
+        ;; For this example, we'll just update the total supply
+        
+        total_supply = total_supply + amount;
+        
+        ;; Update smart contract data
+        set_data(begin_cell()
+            .store_coins(total_supply)
+            .end_cell()
+        );
+        
+        return ();
+    }
+    
+    ;; Handle redeem function (0x52656465656d = "Redeem")
+    if (function_id == 0x52656465656d) {
+        ;; Format: 0x52656465656d + amount
+        int amount = msg_body~load_coins();
+        
+        ;; In a real implementation, you'd validate the sender has enough tokens
+        ;; For this example, we'll just update the total supply
+        
+        total_supply = total_supply - amount;
+        
+        ;; Update smart contract data
+        set_data(begin_cell()
+            .store_coins(total_supply)
+            .end_cell()
+        );
+        
+        return ();
+    }
+    
+    ;; Handle other function calls
+    throw(4); ;; Unknown function error
+}
+
+;; Function to get the total supply of tokens
+int get_total_supply() method_id {
+    slice ds = get_data().begin_parse();
+    return ds~load_coins();
+}
