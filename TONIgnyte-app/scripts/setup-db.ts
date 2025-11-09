@@ -1,45 +1,36 @@
 // scripts/setup-db.ts
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+async function setupDatabase() {
+  // Check if we have database environment variables
+  const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_PRISMA_URL;
+  if (!databaseUrl) {
+    console.error('Error: Database URL not configured. Please set DATABASE_URL or POSTGRES_PRISMA_URL environment variable.');
+    process.exit(1);
+  }
 
-async function main() {
-  console.log('Setting up database...');
-  
-  // Create a sample user
-  const user = await prisma.user.upsert({
-    where: { telegramId: 'user123' },
-    update: {},
-    create: {
-      telegramId: 'user123',
-      tonAddress: 'EQCD39...vK32',
-    },
+  const prisma = new PrismaClient({
+    log: ['query', 'error', 'warn'],
   });
-  
-  console.log('Created user:', user);
-  
-  // Create a sample merchant
-  const merchant = await prisma.merchant.upsert({
-    where: { tonAddress: 'EQCD39...vK32' },
-    update: {},
-    create: {
-      name: 'Sample Merchant',
-      tonAddress: 'EQCD39...vK32',
-      description: 'A sample merchant for testing',
-    },
-  });
-  
-  console.log('Created merchant:', merchant);
-  
-  console.log('Database setup complete!');
+
+  try {
+    console.log('Setting up database with URL:', databaseUrl.substring(0, 50) + '...');
+    
+    // Test the database connection
+    await prisma.$connect();
+    console.log('Successfully connected to database');
+    
+    // Run a simple query to verify the connection
+    await prisma.$queryRaw`SELECT 1`;
+    console.log('Database query test successful');
+    
+    console.log('Database setup completed successfully');
+  } catch (error) {
+    console.error('Failed to set up database:', error);
+    process.exit(1);
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
+setupDatabase();

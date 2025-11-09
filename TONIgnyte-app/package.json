@@ -13,6 +13,8 @@
     "postinstall": "prisma generate",
     "db:setup": "tsx scripts/setup-db.ts",
     "db:migrate": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:pull": "prisma db pull",
     "contract:compile": "tsx scripts/compile-contract.ts",
     "contract:deploy": "tsx scripts/deploy-contract.ts"
   },

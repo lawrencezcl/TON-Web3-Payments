@@ -3,7 +3,16 @@ import { PrismaClient } from '@prisma/client';
 
 // Create a single instance of PrismaClient
 const prismaClientSingleton = () => {
-  return new PrismaClient();
+  // Check if we have the required environment variables
+  const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_PRISMA_URL;
+  if (!databaseUrl) {
+    console.warn('Warning: Database URL not configured. Database operations will fail.');
+  }
+  
+  // Configure Prisma client with appropriate settings for production
+  return new PrismaClient({
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  });
 };
 
 type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>;
