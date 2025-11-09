@@ -139,11 +139,33 @@ The application uses TON Connect for wallet integration, providing:
 
 ## Deployment
 
-The application is configured for deployment on Vercel. The build process includes:
+The application is configured for deployment on Vercel with an automated CI/CD pipeline. The setup includes:
 
+- GitHub Actions workflow for automatic deployments
+- Environment-specific configurations
+- Database migrations on deployment
+- Build process with dependency installation and Prisma generation
+
+### CI/CD Pipeline
+
+The CI/CD pipeline is configured as follows:
+1. Code is pushed to the GitHub repository
+2. GitHub Actions workflow triggers automatically
+3. Dependencies are installed and tests run
+4. Application is built
+5. Deployed to Vercel (preview for PRs, production for main branch)
+
+For the deployment to work properly, ensure the following environment variables are set in Vercel:
+- `POSTGRES_PRISMA_URL`: Database connection string (provided by Vercel Postgres)
+- `JWT_SECRET`: Secret key for authentication
+- `NEXT_PUBLIC_APP_URL`: Application URL
+- `NEXT_PUBLIC_TON_NETWORK`: TON network (testnet/mainnet)
+- `VERCEL_GIT_COMMIT_REF`: For environment-specific configurations
+
+The build process includes:
 - Dependency installation
-- Prisma client generation
-- Next.js build
+- Prisma client generation (`prisma generate`)
+- Next.js build (`next build`)
 - Smart contract compilation (if needed)
 
 ## Security Considerations
