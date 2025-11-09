@@ -2,6 +2,9 @@
 import { NextResponse } from 'next/server';
 import { LoyaltyService } from '@/lib/services/loyalty-service';
 
+// Disable static generation for this route since it accesses request.url
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
