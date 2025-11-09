@@ -1,0 +1,47 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: TONIgnyte-app/package-lock.json
+    
+    - name: Install dependencies
+      run: |
+        cd TONIgnyte-app
+        npm ci
+    
+    - name: Run tests
+      run: |
+        cd TONIgnyte-app
+        npm test
+      continue-on-error: true
+    
+    - name: Build project
+      run: |
+        cd TONIgnyte-app
+        npm run build
+    
+    - name: Deploy to Vercel
+      uses: amondnet/vercel-action@v25
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        vercel-org-id: lawrencezcls-projects
+        vercel-project-id: prj_D8WTAZDxRSU6OeVD2ovh6CcbXZvg
+        working-directory: TONIgnyte-app

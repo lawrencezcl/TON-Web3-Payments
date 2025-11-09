@@ -57,7 +57,13 @@ async function deployLoyaltyContract() {
   };
 
   // Calculate the contract address
-  const contractAddress = Address.compute(stateInit);
+  const contractAddress = new Address(0, beginCell()
+    .storeUint(0, 2)
+    .storeDict(null)
+    .storeRef(contractCode)
+    .storeRef(initialData)
+    .endCell()
+    .hash());
   console.log('Contract will be deployed at address:', contractAddress.toString());
 
   // Send the deployment transaction
@@ -71,7 +77,7 @@ async function deployLoyaltyContract() {
         to: contractAddress,
         value: toNano('0.05'), // 0.05 TON for gas
         body: beginCell().endCell(), // deployment body
-        stateInit: stateInit,
+        init: stateInit,
       }),
     ],
     sendMode: SendMode.PAY_GAS_SEPARATELY,

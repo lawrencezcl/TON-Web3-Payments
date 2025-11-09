@@ -27,6 +27,13 @@ export async function POST(request: Request) {
     // Create or update user
     const user = await UserService.createOrUpdateUser(telegramId, tonAddress);
 
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Failed to create or update user' },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({ 
       success: true,
       user: {

@@ -1,6 +1,6 @@
-// lib/services/user-service.ts
 import { DatabaseService } from './database-service';
 import { WalletService } from './wallet-service';
+import { prisma } from './database-service';
 
 export class UserService {
   static async createOrUpdateUser(telegramId: string, tonAddress?: string) {
@@ -11,7 +11,7 @@ export class UserService {
       if (user) {
         // Update the user's TON address if provided and different
         if (tonAddress && user.tonAddress !== tonAddress) {
-          user = await DatabaseService.prisma.user.update({
+          user = await prisma.user.update({
             where: { id: user.id },
             data: { tonAddress },
           });

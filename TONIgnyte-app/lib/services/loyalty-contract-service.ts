@@ -1,17 +1,18 @@
 // lib/services/loyalty-contract-service.ts
-import { Address, beginCell, contractAddress, internal, toNano, Cell, TonClient, SendMode } from 'ton-core';
+import { Address, beginCell, contractAddress, internal, toNano, Cell, SendMode } from 'ton-core';
 import { WalletService } from './wallet-service';
 import { DatabaseService } from './database-service';
-import { TonClient as TonClient4 } from 'ton';
+import { prisma } from './database-service';
+import { TonClient } from 'ton';
 
 export class LoyaltyContractService {
   private walletService: WalletService;
-  private client: TonClient4;
+  private client: TonClient;
 
   constructor(walletService: WalletService) {
     this.walletService = walletService;
     // Initialize TON client for testnet
-    this.client = new TonClient4({
+    this.client = new TonClient({
       endpoint: 'https://sandbox.tonhubapi.com/jsonRPC', // Using TON testnet endpoint
     });
   }
@@ -131,7 +132,7 @@ export class LoyaltyContractService {
 
   // Private helper to get wallet address for user
   private async getWalletAddressForUser(userId: number): Promise<string> {
-    const user = await DatabaseService.prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { id: userId },
     });
     
